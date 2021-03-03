@@ -5,12 +5,9 @@ import com.techelevator.tenmo.model.Accounts;
 
 public interface AccountsDAO {
 	
-
+	Accounts getAccountByUserId(Long userId);
 	
-	Accounts getAccountsByUserId(Long userId);
-	
-	double updateBalance(Long accountId,double balance);
+    void updateBalance(Accounts account, double balance);
 	
 	double getBalanceByUserId(Long userId);
-
 }
