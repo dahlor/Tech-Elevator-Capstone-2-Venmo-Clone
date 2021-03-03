@@ -11,6 +11,6 @@ public interface TransfersDAO {
 	
 	Transfers create(Transfers transfers);
 	
-    Transfers getTransfersByTransferId();
+    Transfers getTransfersByTransferId(Long transferId);
 
 }

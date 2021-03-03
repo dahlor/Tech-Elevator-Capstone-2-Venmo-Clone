@@ -2,13 +2,17 @@ package com.techelevator.tenmo.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import com.techelevator.tenmo.model.Accounts;
 import com.techelevator.tenmo.model.User;
-
+@Component
 public class AccountsSqlDAO implements AccountsDAO {
 
     private JdbcTemplate jdbcTemplate;
+    public AccountsSqlDAO() {
+    	
+    } 
     
     public AccountsSqlDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
