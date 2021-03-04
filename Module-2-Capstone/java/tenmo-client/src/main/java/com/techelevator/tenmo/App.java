@@ -27,7 +27,6 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
-    private String myUsername = "";
     
     TenmoApplicationServices appService = new TenmoApplicationServices(API_BASE_URL);    
 
@@ -73,7 +72,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewCurrentBalance() throws AuthenticationServiceException {
-		System.out.println("Your current account balance is: $" + String.format("%.2f", appService.getBalanceByUserId((long) appService.getIdByUsername(myUsername)).getBalance()));
+		System.out.println("Your current account balance is: $" + String.format("%.2f", appService.getBalanceByUserId((long) appService.getIdByUsername(currentUser.getUser().getUsername())).getBalance()));
 	}
 
 	private void viewTransferHistory() {
@@ -86,9 +85,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 	}
 
-	private void sendBucks() {
-		// TODO Auto-generated method stub
-		
+	private void sendBucks() throws AuthenticationServiceException {
+		System.out.println("TEST " + appService.listUsers().toString() + " TEST");
 	}
 
 	private void requestBucks() {
@@ -142,7 +140,6 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		{
 			UserCredentials credentials = collectUserCredentials();
 		    try {
-		    	myUsername = credentials.getUsername();
 				currentUser = authenticationService.login(credentials);
 			} catch (AuthenticationServiceException e) {
 				System.out.println("LOGIN ERROR: "+e.getMessage());
