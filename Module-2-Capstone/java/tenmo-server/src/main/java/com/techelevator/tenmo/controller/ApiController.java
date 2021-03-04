@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import com.techelevator.tenmo.dao.AccountsDAO;
 import com.techelevator.tenmo.dao.AccountsSqlDAO;
 import com.techelevator.tenmo.dao.TransfersDAO;
@@ -16,6 +15,7 @@ import com.techelevator.tenmo.dao.TransfersSqlDAO;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.dao.UserSqlDAO;
 import com.techelevator.tenmo.model.Accounts;
+import com.techelevator.tenmo.model.Transfers;
 
 /*******************************************************************************************************
  * This is where you code any API controllers you may create
@@ -41,6 +41,19 @@ public class ApiController {
         return accountsDAO.getBalanceByUserId(userId);
 	}
     
+    ///// ********** VERIFY THIS LATER  *****************
+    
+	@RequestMapping(path="/transfers", method= RequestMethod.GET) // The following function will handle /departments path 
+	public List<Transfers> listAllTransfers() {
+		List<Transfers> theTransfers;
+		theTransfers = transfersDAO.getAllTransfers();
+		return theTransfers;
+	}
+	
+    @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.GET)
+    public Transfers getTransferById(@PathVariable Long transferId) {
+    	return transfersDAO.getTransfersByTransferId(transferId);
+	}
     
 	
 }

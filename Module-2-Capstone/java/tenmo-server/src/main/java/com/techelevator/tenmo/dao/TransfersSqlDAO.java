@@ -22,13 +22,11 @@ public class TransfersSqlDAO implements TransfersDAO {
 	@Override
 	public List<Transfers> getAllTransfers() {
 		ArrayList<Transfers> getListOfTransfers = new ArrayList<Transfers>();
-		String sqlQuery = "Select transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount" + " from transfers" + " where(?,?,?,?,?,?)";
+		String sqlQuery = "Select * from transfers";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlQuery);
 		if(results.next()) {
 			Transfers theTransfers = mapRowToTransfer(results);
 			getListOfTransfers.add(theTransfers);
-			
-			
 		}
 				          
 				         
