@@ -1,9 +1,11 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.models.Accounts;
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+import com.techelevator.tenmo.services.TenmoApplicationServices;
 import com.techelevator.view.ConsoleService;
 
 public class App {
@@ -25,8 +27,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
+    private String myUsername = "";
+    
+    TenmoApplicationServices appService = new TenmoApplicationServices(API_BASE_URL);    
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws AuthenticationServiceException {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
     	app.run();
     }
@@ -36,7 +41,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		this.authenticationService = authenticationService;
 	}
 
-	public void run() {
+	public void run() throws AuthenticationServiceException {
 		System.out.println("*********************");
 		System.out.println("* Welcome to TEnmo! *");
 		System.out.println("*********************");
@@ -45,7 +50,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		mainMenu();
 	}
 
-	private void mainMenu() {
+	private void mainMenu() throws AuthenticationServiceException {
 		while(true) {
 			String choice = (String)console.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 			if(MAIN_MENU_OPTION_VIEW_BALANCE.equals(choice)) {
@@ -63,12 +68,12 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			} else {
 				// the only other option on the main menu is to exit
 				exitProgram();
-			}
+			} 
 		}
 	}
 
-	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub	
+	private void viewCurrentBalance() throws AuthenticationServiceException {
+		System.out.println("Your current account balance is: $" + String.format("%.2f", appService.getBalanceByUserId((long) appService.getIdByUsername(myUsername)).getBalance()));
 	}
 
 	private void viewTransferHistory() {
@@ -137,6 +142,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		{
 			UserCredentials credentials = collectUserCredentials();
 		    try {
+		    	myUsername = credentials.getUsername();
 				currentUser = authenticationService.login(credentials);
 			} catch (AuthenticationServiceException e) {
 				System.out.println("LOGIN ERROR: "+e.getMessage());
