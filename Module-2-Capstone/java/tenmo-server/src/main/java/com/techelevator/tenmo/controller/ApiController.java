@@ -21,20 +21,22 @@ import com.techelevator.tenmo.model.Accounts;
  * This is where you code any API controllers you may create
 ********************************************************************************************************/
 @RestController
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 public class ApiController {
 	private AccountsDAO accountsDAO;
 	private TransfersDAO transfersDAO;
 	private UserDAO userDAO;
-	public ApiController() {
-		this.accountsDAO = new AccountsSqlDAO();
-		this.transfersDAO = new TransfersSqlDAO();
-		this.userDAO = new UserSqlDAO();
+	public ApiController(AccountsSqlDAO accountsDAO, TransfersSqlDAO transfersDAO, UserSqlDAO userDAO) {
+		this.accountsDAO = accountsDAO;
+		this.transfersDAO = transfersDAO;
+		this.userDAO = userDAO;
 		
 	}
-	@PreAuthorize("permitAll()")  // allow anyone regardless of their login status to access this method
+//	@PreAuthorize("permitAll()")  // allow anyone regardless of their login status to access this method
     @RequestMapping(path = "/balance/{userId}", method = RequestMethod.GET)
-    public double getAccountByUserId(@PathVariable Long userId) {
+    public Accounts getAccountByUserId(@PathVariable Long userId) {
+		//Long Id = Long.valueOf(userId);
         return accountsDAO.getBalanceByUserId(userId);
 	}
+	
 }

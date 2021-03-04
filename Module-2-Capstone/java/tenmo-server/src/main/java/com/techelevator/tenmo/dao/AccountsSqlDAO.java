@@ -34,11 +34,19 @@ public class AccountsSqlDAO implements AccountsDAO {
 	}
 
 	@Override
-	public double getBalanceByUserId(Long userId) {
+	public Accounts getBalanceByUserId(Long userId) {
 		String sqlQuery = "select balance from accounts where user_id = ?";
 		SqlRowSet theRowSet = jdbcTemplate.queryForRowSet(sqlQuery, userId);
-		double returnedBalance = theRowSet.getDouble("balance");
-		return returnedBalance;
+		Accounts returnedAccount = new Accounts();
+		while(theRowSet.next()) {
+			returnedAccount = mapRowToAccounts(theRowSet);
+			
+		}
+		
+		return returnedAccount;
+		
+		//double returnedBalance = theRowSet.getDouble("balance");
+		//return returnedBalance;
 	}
 	
     private Accounts mapRowToAccounts(SqlRowSet rs) {

@@ -9,5 +9,5 @@ public interface AccountsDAO {
 	
     void updateBalance(Accounts account, double balance);
 	
-	double getBalanceByUserId(Long userId);
+	Accounts getBalanceByUserId(Long userId);
 }
