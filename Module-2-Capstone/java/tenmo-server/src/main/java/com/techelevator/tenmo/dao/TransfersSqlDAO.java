@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import com.techelevator.tenmo.model.Accounts;
 import com.techelevator.tenmo.model.Transfers;
 @Component
 public class TransfersSqlDAO implements TransfersDAO {
@@ -68,6 +69,38 @@ public class TransfersSqlDAO implements TransfersDAO {
 		
 		
 	}
+	public Transfers getTransfersByUserId(Long userId) {
+		Transfers theTransferById = new Transfers();
+		String sqlQuery = "select transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount,users.user_id,username " + 
+				"from transfers" + 
+				"join accounts" + 
+				"on transfers.transfer_id = accounts.account_id" + 
+				"join users" + 
+				"on accounts.user_id = users.user_id ";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlQuery,userId);
+		while(results.next()) {
+			theTransferById = mapRowToTransfer(results);
+			
+		}
+		return theTransferById;
+	}
+		
+	public void updateTransfers( Transfers transfer, Long transferId) {
+		Transfers theUpdateTransfer = new Transfers();
+		String sqlQuery = "insert into( transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount) values(?,?,?,?,?,? )";
+		theUpdateTransfer.setTransferId(getNextTransferId());
+		jdbcTemplate.update(sqlQuery,theUpdateTransfer.getTransferId(),theUpdateTransfer.getTransferTypeId(),
+				            theUpdateTransfer.getTransferStatusId(),
+				            theUpdateTransfer.getAccountFrom(),
+				            theUpdateTransfer.getAccountTo(),
+				            theUpdateTransfer.getAmount());
+		//return newUpdatedTransfer;
+		
+	}
+		
+		
+		
+	
 	private Transfers mapRowToTransfer(SqlRowSet results) {
 		Transfers theTransfer;
 		theTransfer = new Transfers();
@@ -79,6 +112,15 @@ public class TransfersSqlDAO implements TransfersDAO {
 		theTransfer.setAmount(results.getDouble("amount"));
 		
 		return theTransfer;
+	}
+	private long getNextTransferId() {
+		SqlRowSet nextTransferIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_transfer_id')");
+		if(nextTransferIdResult.next()) {
+			return nextTransferIdResult.getLong(1);
+		
+		} else {
+			throw new RuntimeException("Something went wrong while getting an id for the new department");
+		}
 	}
 
 }

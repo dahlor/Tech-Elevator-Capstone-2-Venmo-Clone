@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.dao.UserSqlDAO;
 import com.techelevator.tenmo.model.Accounts;
 import com.techelevator.tenmo.model.Transfers;
+import com.techelevator.tenmo.model.User;
 
 /*******************************************************************************************************
  * This is where you code any API controllers you may create
@@ -34,11 +36,11 @@ public class ApiController {
 		
 	}
 //	@PreAuthorize("permitAll()")  // allow anyone regardless of their login status to access this method
-    @RequestMapping(path = "/balance/{userId}", method = RequestMethod.GET)
+    @RequestMapping(path = "/account/{userId}", method = RequestMethod.GET)
     public Accounts getAccountByUserId(@PathVariable Long userId) {
 		//Long Id = Long.valueOf(userId);
-    	System.out.println("path received: /balance/" + userId);
-        return accountsDAO.getBalanceByUserId(userId);
+    	//System.out.println("path received: /balance/" + userId);
+        return accountsDAO.getAccountByUserId(userId);
 	}
     
     ///// ********** VERIFY THIS LATER  *****************
@@ -54,6 +56,39 @@ public class ApiController {
     public Transfers getTransferById(@PathVariable Long transferId) {
     	return transfersDAO.getTransfersByTransferId(transferId);
 	}
+    
+    @RequestMapping(path = "/balance/{userId}", method = RequestMethod.GET)
+    public Accounts getBalanceByUserId(@PathVariable Long userId) {
+		    	
+        return accountsDAO.getBalanceByUserId(userId);
+	}
+    
+    @RequestMapping(path = "/transfers/{userId}", method = RequestMethod.GET)
+    public Transfers getTransfersByUserId(@PathVariable Long userId) {
+    	return transfersDAO.getTransfersByUserId(userId);
+    }
+    
+    @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.POST)
+    public void updateTransfers(@RequestBody Transfers transfer, @PathVariable Long transferId) {
+    	transfersDAO.updateTransfers(transfer, transferId);
+    }
+    @RequestMapping(path = "/account/balance", method = RequestMethod.POST)
+    public void updateBalance(@RequestBody Accounts account, double balance) {
+    	accountsDAO.updateBalance(account, balance);
+    }
+    @RequestMapping(path = "/user", method = RequestMethod.GET)
+    public List<User> findAllUsers(){
+    	List<User> findAll;
+    	findAll = userDAO.findAll();
+    	return findAll;
+    }
+    
+    
+    
+    
+    
+    
+   
     
 	
 }
