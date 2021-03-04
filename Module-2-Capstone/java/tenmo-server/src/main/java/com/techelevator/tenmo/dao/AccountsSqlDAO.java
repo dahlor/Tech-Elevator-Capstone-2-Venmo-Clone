@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.dao;
 
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -10,12 +12,9 @@ import com.techelevator.tenmo.model.User;
 public class AccountsSqlDAO implements AccountsDAO {
 
     private JdbcTemplate jdbcTemplate;
-    public AccountsSqlDAO() {
-    	
-    } 
-    
-    public AccountsSqlDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+
+    public AccountsSqlDAO(DataSource aDataSource) {
+        this.jdbcTemplate = new JdbcTemplate(aDataSource);
     }
 	
 	@Override
@@ -35,7 +34,7 @@ public class AccountsSqlDAO implements AccountsDAO {
 
 	@Override
 	public Accounts getBalanceByUserId(Long userId) {
-		String sqlQuery = "select balance from accounts where user_id = ?";
+		String sqlQuery = "select * from accounts where user_id = ?";
 		SqlRowSet theRowSet = jdbcTemplate.queryForRowSet(sqlQuery, userId);
 		Accounts returnedAccount = new Accounts();
 		while(theRowSet.next()) {

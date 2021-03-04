@@ -17,9 +17,7 @@ public class TransfersSqlDAO implements TransfersDAO {
 		
 		 this.jdbcTemplate = jdbcTemplate;
 	}
-	public TransfersSqlDAO() {
-		
-	}
+	
 
 	@Override
 	public List<Transfers> getAllTransfers() {

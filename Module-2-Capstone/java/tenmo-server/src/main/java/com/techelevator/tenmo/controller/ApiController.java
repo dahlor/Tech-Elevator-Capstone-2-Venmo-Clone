@@ -26,7 +26,8 @@ public class ApiController {
 	private AccountsDAO accountsDAO;
 	private TransfersDAO transfersDAO;
 	private UserDAO userDAO;
-	public ApiController(AccountsSqlDAO accountsDAO, TransfersSqlDAO transfersDAO, UserSqlDAO userDAO) {
+	
+	public ApiController(AccountsDAO accountsDAO, TransfersDAO transfersDAO, UserDAO userDAO) {
 		this.accountsDAO = accountsDAO;
 		this.transfersDAO = transfersDAO;
 		this.userDAO = userDAO;
@@ -36,7 +37,10 @@ public class ApiController {
     @RequestMapping(path = "/balance/{userId}", method = RequestMethod.GET)
     public Accounts getAccountByUserId(@PathVariable Long userId) {
 		//Long Id = Long.valueOf(userId);
+    	System.out.println("path received: /balance/" + userId);
         return accountsDAO.getBalanceByUserId(userId);
 	}
+    
+    
 	
 }
