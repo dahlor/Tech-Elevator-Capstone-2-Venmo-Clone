@@ -19,5 +19,6 @@ public interface TransfersDAO {
     List<Transfers> getTransfersByAccount(Long accountId);
     
     void updateTransfers(Transfers transfer, Long transferId);
+   // Transfers createNewTransfer(Long userId, String userName);
 
 }

@@ -82,6 +82,17 @@ public class TenmoApplicationServices {
 		    }
 		    return listOfUsers;
 		  }
+	  public String findUsernameByAccount(Long accountNumber) throws AuthenticationServiceException {
+		  String myUsername;
+		    try {
+		      myUsername = restTemplate.exchange(BASE_URL + "account/" + accountNumber + "/username", HttpMethod.GET, makeAuthEntity(), String.class).getBody();
+		    } catch (RestClientResponseException ex) {
+		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+		    }
+		    return myUsername;
+		  
+	  }
+	
 	  
 //	  public Transfers[] listTransfers(Long userId) throws AuthenticationServiceException {
 //		    Transfers[] listOfTransfers = null;

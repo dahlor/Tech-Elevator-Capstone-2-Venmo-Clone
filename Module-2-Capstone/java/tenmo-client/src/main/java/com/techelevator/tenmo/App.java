@@ -78,7 +78,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void viewCurrentBalance() throws AuthenticationServiceException {
 	    Long longUserId = ((long) appService.getIdByUsername(currentUser.getUser().getUsername()));
 		System.out.println("Your current account balance is: $" + String.format("%.2f", appService.getBalanceByUserId(longUserId).getBalance()));
-	}
+	} 
 
 	private void viewTransferHistory() throws AuthenticationServiceException {
 		
@@ -102,6 +102,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				System.out.println("------------------------------------------------");
 				System.out.println("         T R A N S F E R  D E T A I L S         ");	
 				System.out.println("------------------------------------------------");
+				
+			//formattedUserList(appService.findUsernameByAccount(accountNumber));
+				
 			
 				// ACTUALLY LIST THE TRANSFER DETAILS
 			
@@ -270,4 +273,5 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	       System.out.print("             $" + String.format("%.2f",myTransfer.getAmount()) + "\n");
 	    }
    }
+	
 }

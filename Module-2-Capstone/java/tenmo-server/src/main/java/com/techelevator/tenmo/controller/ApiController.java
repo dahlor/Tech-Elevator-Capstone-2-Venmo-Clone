@@ -92,7 +92,13 @@ public class ApiController {
     public String getUsernameFromId(@PathVariable Long id) {
     	return userDAO.findUsernameById(id);
     }
-
+	
+    
+    @RequestMapping(path = "/account/{accountNumber}/username", method = RequestMethod.GET)
+    public String findUsernameByAccount(@PathVariable Long accountNumber) {
+    	return userDAO.findUsernameByAccount(accountNumber);
+    }
+	
     
     
     

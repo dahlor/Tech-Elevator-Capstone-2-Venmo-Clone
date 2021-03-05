@@ -56,6 +56,13 @@ public class UserSqlDAO implements UserDAO {
         }
         throw new UsernameNotFoundException("User " + username + " was not found.");
     }
+    @Override
+    public String findUsernameByAccount(Long accountNumber) {
+    	
+         return jdbcTemplate.queryForObject("select username from users inner join accounts on accounts.user_id = users.user_id where account_id = ? ", String.class, accountNumber);
+    	
+    	
+    }
 
     @Override
     public boolean create(String username, String password) {
