@@ -10,7 +10,7 @@ public interface TransfersDAO {
 	
 	List<Transfers> getAllTransfers() ;
 	
-	Transfers create(Transfers transfers);
+	Transfers pushTransfer(Transfers transfers);
 	
     Transfers getTransfersByTransferId(Long transferId);
     
@@ -19,6 +19,7 @@ public interface TransfersDAO {
     List<Transfers> getTransfersByAccount(Long accountId);
     
     void updateTransfers(Transfers transfer, Long transferId);
-   // Transfers createNewTransfer(Long userId, String userName);
+    
+   // Transfers createNewTransfer(Long transferId);
 
 }

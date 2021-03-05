@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+
 import com.techelevator.tenmo.models.Accounts;
 import com.techelevator.tenmo.models.Transfers;
 import com.techelevator.tenmo.models.User;
@@ -102,13 +103,36 @@ public class TenmoApplicationServices {
 		    }
 		    return myUsername;  
 	  }
-	  
-	  public void updateEverybodysBalances(Long accountFrom, Long accountTo, double amount) throws AuthenticationServiceException {
-		  try {
-		      restTemplate.exchange(BASE_URL + "account/balance", HttpMethod.POST, makeAuthEntity()).getBody();
-		      restTemplate.exchange(BASE_URL + "account/balance", HttpMethod.POST, makeAuthEntity()).getBody();
+	  public Transfers createTransfersByUserId(Long transferId) throws AuthenticationServiceException {
+	    	Transfers myTransfers = null;
+		    try {
+		      myTransfers = restTemplate.exchange(BASE_URL + "/transfers/" + transferId, HttpMethod.GET, makeAuthEntity(), Transfers.class).getBody();
+		    } catch (RestClientResponseException ex) {
+		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+		    }
+		    return myTransfers;
 		  }
+	  
+	  public Transfers pushTransfer(Long transferId, Transfers transfer) throws AuthenticationServiceException {
+		  Transfers myTransfers = null;
+		    try {
+		      myTransfers = restTemplate.exchange(BASE_URL + "/transfers/"+ transferId , HttpMethod.POST, makeAuthEntity(), Transfers.class).getBody();
+		    } catch (RestClientResponseException ex) {
+		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+		    }
+		    return myTransfers;
+		  
 	  }
+	  
+	/*
+	 * public Transfers updateEverybodysBalances(Long accountFrom, Long accountTo,
+	 * double amount) { Accounts accounts =
+	 * sendTransferAccounts(accountFrom,accountTo,amount); try {
+	 * restTemplate.put(BASE_URL + "account/" + accountFrom.,HttpMethod.POST,
+	 * makeAuthEntity()); } catch (RestClientResponseException ex) { throw new
+	 * AuthenticationServiceException(ex.getRawStatusCode() + " : " +
+	 * ex.getResponseBodyAsString()); } }
+	 */
 	
 	  
 //	  public Transfers[] listTransfers(Long userId) throws AuthenticationServiceException {
@@ -120,6 +144,21 @@ public class TenmoApplicationServices {
 //		    }
 //		    return listOfTransfers;
 //		  }
+	  private Transfers sendTransferAccounts(Long accountFrom,Long accountTo,double amount) {
+		  Transfers accountsnumber = null ;
+		 
+			  accountsnumber.setAccountFrom(accountFrom);
+			  accountsnumber.setAccountTo(accountTo);
+			  accountsnumber.setAmount(amount);
+			  accountsnumber.setTransferStatusId(Long.parseLong("2"));
+			  accountsnumber.setTransferTypeId(Long.parseLong("2"));
+			  return accountsnumber;
+			 
+			 
+		  }
+		
+		  
+	  
 	
 	private HttpEntity makeAuthEntity() {
 		   HttpHeaders headers = new HttpHeaders();        // instantiate a header object for request

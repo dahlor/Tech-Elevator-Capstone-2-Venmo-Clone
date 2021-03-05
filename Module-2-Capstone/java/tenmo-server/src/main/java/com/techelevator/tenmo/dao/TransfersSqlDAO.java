@@ -31,12 +31,11 @@ public class TransfersSqlDAO implements TransfersDAO {
 		}				          			   			
 		return getListOfTransfers;
 	}
-
 	@Override
-	public Transfers create(Transfers transfers) {
+	public Transfers pushTransfer(Transfers transfers) {
 		Transfers theTransfer = new Transfers();
-		String sqlQuery = "insert into (transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount) " +
-		                   " values (?,?,?,?,?,?) ";
+		String sqlQuery = "insert into transfers (transfer_type_id,transfer_status_id,account_from,account_to,amount) " +
+		                   " values (?,?,?,?,?) ";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlQuery,transfers);
 		while(results.next()) {
 			theTransfer = mapRowToTransfer(results);

@@ -2,6 +2,8 @@ package com.techelevator.tenmo;
 
 import java.util.Arrays;
 
+
+
 import com.techelevator.tenmo.models.Accounts;
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.Transfers;
@@ -156,6 +158,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			try{
 				String enteredAmount = console.getUserInput("Enter amount");
 				Double formattedAmount = Double.parseDouble(enteredAmount);
+               // Long longTransferId = Long.parseLong(transferId);
+				
+				//appService.pushTransfer(longTransferId, transfer);
 			
 				
 			
@@ -186,6 +191,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				Double formattedAmount = Double.parseDouble(enteredAmount);
 			
 			// ACTUALLY PUT IN THE TRANSFER REQUEST RIGHT HERE
+				
 			
 				System.out.println("\nYou have requested $" + String.format("%.2f", formattedAmount) + " from " + appService.getUsernameById(Long.parseLong(idRequestingFrom)) + ".");
 			} catch (Exception e) {
@@ -306,5 +312,21 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 		return wordsReturn;
 	}
+	public Transfers createSendTransfer(Long accountFrom, Long accountTo, double amount) {
+		Transfers myTransfer = new Transfers();
+		
+		
+		
+		myTransfer.setTransferTypeId(Long.parseLong("2"));
+		myTransfer.setTransferStatusId(Long.parseLong("2"));
+		myTransfer.setAccountFrom(accountFrom);
+		myTransfer.setAccountTo(accountTo);
+		myTransfer.setAmount(amount);
+		
+		return myTransfer;
+		
+	}
 	
-}
+	}
+	
+

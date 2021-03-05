@@ -103,6 +103,10 @@ public class ApiController {
     public String findUsernameByAccount(@PathVariable Long accountNumber) {
     	return userDAO.findUsernameByAccount(accountNumber);
     }
+    @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.POST)
+    public Transfers pushTransfer(@RequestBody Transfers transfer, @PathVariable Long transferId) {
+    	return transfersDAO.pushTransfer(transfer);
+    }
 	
     
     
