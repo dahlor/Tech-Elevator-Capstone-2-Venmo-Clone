@@ -45,12 +45,12 @@ public class ApiController {
     
     ///// ********** VERIFY THIS LATER  *****************
     
-	@RequestMapping(path="/transfers", method= RequestMethod.GET) // The following function will handle /departments path 
-	public List<Transfers> listAllTransfers() {
-		List<Transfers> theTransfers;
-		theTransfers = transfersDAO.getAllTransfers();
-		return theTransfers;
-	}
+//	@RequestMapping(path="/transfers", method= RequestMethod.GET) // The following function will handle /departments path 
+//	public List<Transfers> listAllTransfers() {
+//		List<Transfers> theTransfers;
+//		theTransfers = transfersDAO.getAllTransfers();
+//		return theTransfers;
+//	}
 	
 //    @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.GET)
 //   public Transfers getTransferById(@PathVariable Long transferId) {
@@ -63,15 +63,20 @@ public class ApiController {
         return accountsDAO.getBalanceByUserId(userId);
 	}
  
-    @RequestMapping(path = "/transfers/{accountId}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{accountId}/transfers", method = RequestMethod.GET)
     public List<Transfers> getTransfersByUserAccount(@PathVariable Long accountId) {
     	return transfersDAO.getTransfersByAccount(accountId);
     }
-    
-    @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.POST)
-    public void updateTransfers(@RequestBody Transfers transfer, @PathVariable Long transferId) {
-    	transfersDAO.updateTransfers(transfer, transferId);
+ 
+    @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.GET)
+    public Transfers getTransferByTransferId(@PathVariable Long transferId) {
+    	return transfersDAO.getTransfersByTransferId(transferId);
     }
+    
+//    @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.POST)
+//    public void updateTransfers(@RequestBody Transfers transfer, @PathVariable Long transferId) {
+//    	transfersDAO.updateTransfers(transfer, transferId);
+//    }
     @RequestMapping(path = "/account/balance", method = RequestMethod.POST)
     public void updateBalance(@RequestBody Accounts account, double balance) {
     	accountsDAO.updateBalance(account, balance);

@@ -53,17 +53,13 @@ public class TransfersSqlDAO implements TransfersDAO {
 	
 	@Override
 	public Transfers getTransfersByTransferId(Long transferId) {
-		Transfers theTransfer = new Transfers();
-		String sqlQuery = "select transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount from transfers " + " where transfer_id = ? ";
+		Transfers theTransfer = null;
+		String sqlQuery = "select * from transfers where transfer_id = ?";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlQuery,transferId);
 		while(results.next()) {
 			theTransfer = mapRowToTransfer(results);
-			
 		}
 		return theTransfer;
-		
-		
-		
 		
 	}
 	public Transfers getTransfersByUserId(Long userId) {
@@ -77,7 +73,6 @@ public class TransfersSqlDAO implements TransfersDAO {
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlQuery,userId);
 		while(results.next()) {
 			theTransferById = mapRowToTransfer(results);
-			
 		}
 		return theTransferById;
 	}
@@ -120,7 +115,6 @@ public class TransfersSqlDAO implements TransfersDAO {
 		theTransfer.setAccountFrom(results.getLong("account_from"));
 		theTransfer.setAccountTo(results.getLong("account_to"));
 		theTransfer.setAmount(results.getDouble("amount"));
-		
 		return theTransfer;
 	}
 	private long getNextTransferId() {

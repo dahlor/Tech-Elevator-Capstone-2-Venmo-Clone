@@ -65,11 +65,21 @@ public class TenmoApplicationServices {
     public Transfers[] getTransfersByAccount(Long accountId) throws AuthenticationServiceException {
     	Transfers[] listOfTransfers = null;
 	    try {
-	      listOfTransfers = restTemplate.exchange(BASE_URL + "transfers/" + accountId, HttpMethod.GET, makeAuthEntity(), Transfers[].class).getBody();
+	      listOfTransfers = restTemplate.exchange(BASE_URL + "/" + accountId + "/transfers", HttpMethod.GET, makeAuthEntity(), Transfers[].class).getBody();
 	    } catch (RestClientResponseException ex) {
 	      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 	    }
 	    return listOfTransfers;
+	  }
+    
+    public Transfers getTransfersByTransferId(Long transferId) throws AuthenticationServiceException {
+    	Transfers myTransfers = null;
+	    try {
+	      myTransfers = restTemplate.exchange(BASE_URL + "/transfers/" + transferId, HttpMethod.GET, makeAuthEntity(), Transfers.class).getBody();
+	    } catch (RestClientResponseException ex) {
+	      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+	    }
+	    return myTransfers;
 	  }
 	
 	
@@ -82,6 +92,7 @@ public class TenmoApplicationServices {
 		    }
 		    return listOfUsers;
 		  }
+	  
 	  public String findUsernameByAccount(Long accountNumber) throws AuthenticationServiceException {
 		  String myUsername;
 		    try {

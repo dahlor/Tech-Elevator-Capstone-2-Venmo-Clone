@@ -4,7 +4,7 @@ public class Transfers {
 	
 	private Long transferId;
 	private Long transferTypeId;
-	private Long transferStatus;
+	private Long transferStatusId;
 	private Long accountFrom;
 	private Long accountTo;
 	private double amount;
@@ -13,12 +13,12 @@ public class Transfers {
 	}
 	
 	public Transfers(Long transferId, Long transferTypeId, 
-					 Long transferStatus, Long accountFrom, 
+					 Long transferStatusId, Long accountFrom, 
 					 Long accountTo, double amount) {
 		
 		this.transferId = transferId;
 		this.transferTypeId = transferTypeId;
-		this.transferStatus = transferStatus;
+		this.transferStatusId = transferStatusId;
 		this.accountFrom = accountFrom;
 		this.accountTo = accountTo;
 		this.amount = amount;
@@ -40,12 +40,12 @@ public class Transfers {
 		this.transferTypeId = transferTypeId;
 	}
 
-	public Long getTransferStatus() {
-		return transferStatus;
+	public Long getTransferStatusId() {
+		return transferStatusId;
 	}
 
-	public void setTransferStatus(Long transferStatus) {
-		this.transferStatus = transferStatus;
+	public void setTransferStatusId(Long transferStatusId) {
+		this.transferStatusId = transferStatusId;
 	}
 
 	public Long getAccountFrom() {

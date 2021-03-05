@@ -77,7 +77,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewCurrentBalance() throws AuthenticationServiceException {
 	    Long longUserId = ((long) appService.getIdByUsername(currentUser.getUser().getUsername()));
-		System.out.println("Your current account balance is: $" + String.format("%.2f", appService.getBalanceByUserId(longUserId).getBalance()));
+		System.out.println("Your current account balance is: $" + String.format("%.2f", 
+				appService.getBalanceByUserId(longUserId).getBalance()));
 	} 
 
 	private void viewTransferHistory() throws AuthenticationServiceException {
@@ -103,11 +104,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				System.out.println("         T R A N S F E R  D E T A I L S         ");	
 				System.out.println("------------------------------------------------");
 				
-			//formattedUserList(appService.findUsernameByAccount(accountNumber));
-				
-			
-				// ACTUALLY LIST THE TRANSFER DETAILS
-			
+				Long longTransferId = Long.parseLong(transferId);
+				formattedTransferDetails(appService.getTransfersByTransferId(longTransferId));			
+
+				System.out.println("------------------------------------------------\n");
+
 			} catch (Exception e) {
 				System.out.println("\nInvalid entry. Please try again.\n");
 				sendBucks();
@@ -273,5 +274,39 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	       System.out.print("             $" + String.format("%.2f",myTransfer.getAmount()) + "\n");
 	    }
    }
+	
+	public void formattedTransferDetails(Transfers transferDetails) throws AuthenticationServiceException {
+		System.out.println("Id: " + transferDetails.getTransferId());
+		System.out.println("From: " + appService.findUsernameByAccount(transferDetails.getAccountFrom()));
+		System.out.println("To: " + appService.findUsernameByAccount(transferDetails.getAccountTo()));
+		System.out.println("Type: " + toFromWords(transferDetails.getTransferTypeId()));
+		System.out.println("Status: " + transferStatusWords(transferDetails.getTransferStatusId()));
+		System.out.println("Amount: $" + String.format("%.2f",transferDetails.getAmount()));
+	}
+	
+	public String transferStatusWords(Long transferStatusId) {
+		String statusReturn = "";
+		if (transferStatusId == 1){
+			statusReturn = "Pending";
+		}
+		if (transferStatusId == 2) {
+			statusReturn = "Approved";
+		}
+		if (transferStatusId == 3){
+			statusReturn = "Rejected";
+		}
+		return statusReturn;
+	}
+	
+	public String toFromWords(Long toFrom) {
+		String wordsReturn = "";
+		if (toFrom == 1){
+			wordsReturn = "Request";
+		}
+		if (toFrom == 2) {
+			wordsReturn = "Send";
+		}
+		return wordsReturn;
+	}
 	
 }
