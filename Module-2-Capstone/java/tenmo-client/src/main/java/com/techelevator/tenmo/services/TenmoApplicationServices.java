@@ -50,7 +50,15 @@ public class TenmoApplicationServices {
 	    return myUserId;
 	  }
 	
-	
+	public String getUsernameById(Long userId) throws AuthenticationServiceException{
+	    String myUsername;
+	    try {
+	      myUsername = restTemplate.exchange(BASE_URL + "user/" + userId + "/username", HttpMethod.GET, makeAuthEntity(), String.class).getBody();
+	    } catch (RestClientResponseException ex) {
+	      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+	    }
+	    return myUsername;
+	  }
 	
 	  public User[] listUsers() throws AuthenticationServiceException {
 		    User[] listOfUsers = null;
@@ -62,8 +70,6 @@ public class TenmoApplicationServices {
 		    return listOfUsers;
 		  }
 	  
-	  
-	
 	  public Transfers[] listTransfers(Long userId) throws AuthenticationServiceException {
 		    Transfers[] listOfTransfers = null;
 		    try {

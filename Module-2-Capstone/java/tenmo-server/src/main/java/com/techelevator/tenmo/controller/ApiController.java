@@ -87,6 +87,11 @@ public class ApiController {
     public int getIdFromUsername(@PathVariable String username) {
     	return userDAO.findIdByUsername(username);
     }
+    
+    @RequestMapping(path = "/user/{id}/username", method = RequestMethod.GET)
+    public String getUsernameFromId(@PathVariable Long id) {
+    	return userDAO.findUsernameById(id);
+    }
 
     
     
