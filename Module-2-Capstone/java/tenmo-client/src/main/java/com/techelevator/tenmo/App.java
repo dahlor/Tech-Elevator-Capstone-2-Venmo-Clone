@@ -89,18 +89,31 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		System.out.println("------------------------------------------------");
 		
 		System.out.println(appService.listTransfers(longUserId));
-
+		// THIS IS CRASHING BUT WE'LL FIGURE IT OUT
 		
 		
 		
 		
 		System.out.println("------------------------------------------------\n");
 		
-		System.out.println("Please enter transfer ID to view details (0 to cancel): ");
+		String transferId = console.getUserInput("Please enter transfer ID to view details (0 to cancel)");
+		
+		if (transferId.equals("0")){
+			mainMenu();
+		} else {
+			try{
+				System.out.println("------------------------------------------------");
+				System.out.println("         T R A N S F E R  D E T A I L S         ");	
+				System.out.println("------------------------------------------------");
+			
+				// ACTUALLY LIST THE TRANSFER DETAILS
+			
+			} catch (Exception e) {
+				System.out.println("\nInvalid entry. Please try again.\n");
+				sendBucks();
+			}
+		}	
 
-		System.out.println("------------------------------------------------");
-		System.out.println("         T R A N S F E R  D E T A I L S         ");	
-		System.out.println("------------------------------------------------");
 		
 	}
 
@@ -155,17 +168,32 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 	}
 
-	private void requestBucks() {
+	private void requestBucks() throws AuthenticationServiceException {
 		System.out.println("------------------------------------------------");
 		System.out.println("         R E Q U E S T  T E  B U C K S          \n");
 		System.out.println(" USER ID              NAME                      ");		
 		System.out.println("------------------------------------------------");
 		
+		formattedUserList(appService.listUsers());
+		
 		System.out.println("------------------------------------------------\n");
-		System.out.println("Enter ID of user you are requesting from (0 to cancel): ");
+		String idRequestingFrom = console.getUserInput("Enter ID of user you are requesting from (0 to cancel)");
 		
-		System.out.println("Enter amount: ");
-		
+		if (idRequestingFrom.equals("0")){
+			mainMenu();
+		} else {
+			try{
+				String enteredAmount = console.getUserInput("Enter amount");
+				Double formattedAmount = Double.parseDouble(enteredAmount);
+			
+			// ACTUALLY PUT IN THE TRANSFER REQUEST RIGHT HERE
+			
+				System.out.println("\nYou have requested $" + String.format("%.2f", formattedAmount) + " from " + appService.getUsernameById(Long.parseLong(idRequestingFrom)) + ".");
+			} catch (Exception e) {
+				System.out.println("\nInvalid entry. Please try again.\n");
+				requestBucks();
+			}
+		}
 	}
 	
 	private void exitProgram() {
