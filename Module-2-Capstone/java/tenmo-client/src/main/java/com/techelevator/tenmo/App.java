@@ -114,8 +114,6 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				sendBucks();
 			}
 		}	
-
-		
 	}
 
 	private void viewPendingRequests() {
@@ -159,7 +157,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				String enteredAmount = console.getUserInput("Enter amount");
 				Double formattedAmount = Double.parseDouble(enteredAmount);
 			
-			// ACTUALLY TRANSFER THE MONEY RIGHT HERE
+				
 			
 				System.out.println("\nYou have transferred $" + String.format("%.2f", formattedAmount) + " to " + appService.getUsernameById(Long.parseLong(idSendingTo)) + ".");
 			} catch (Exception e) {

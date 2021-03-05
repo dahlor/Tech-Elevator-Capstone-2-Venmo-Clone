@@ -100,8 +100,14 @@ public class TenmoApplicationServices {
 		    } catch (RestClientResponseException ex) {
 		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		    }
-		    return myUsername;
-		  
+		    return myUsername;  
+	  }
+	  
+	  public void updateEverybodysBalances(Long accountFrom, Long accountTo, double amount) throws AuthenticationServiceException {
+		  try {
+		      restTemplate.exchange(BASE_URL + "account/balance", HttpMethod.POST, makeAuthEntity()).getBody();
+		      restTemplate.exchange(BASE_URL + "account/balance", HttpMethod.POST, makeAuthEntity()).getBody();
+		  }
 	  }
 	
 	  
