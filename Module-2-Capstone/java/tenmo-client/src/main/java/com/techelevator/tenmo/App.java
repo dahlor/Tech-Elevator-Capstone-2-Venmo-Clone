@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.techelevator.tenmo.models.Accounts;
 import com.techelevator.tenmo.models.AuthenticatedUser;
+import com.techelevator.tenmo.models.Transfers;
 import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -88,11 +89,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		System.out.println(" ID                  FROM/TO             AMOUNT ");		
 		System.out.println("------------------------------------------------");
 		
-		System.out.println(appService.listTransfers(longUserId));
-		// THIS IS CRASHING BUT WE'LL FIGURE IT OUT
-		
-		
-		
+		formattedTransferList(appService.getTransfersByAccount(longUserId));
 		
 		System.out.println("------------------------------------------------\n");
 		
@@ -261,4 +258,16 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	        System.out.print("    " + myUser.getId() + "                 " + myUser.getUsername() + "\n");
 	    }
 	}
+	
+	public void formattedTransferList(Transfers[] transferList){
+	    for(Transfers myTransfer : transferList){
+	        System.out.print(" " + myTransfer.getTransferId() + "           ");
+	        	if (myTransfer.getTransferTypeId().equals(1L)){
+		        System.out.print("        From: " + myTransfer.getAccountFrom());
+	        	} else {
+		        System.out.print("        To:   " + myTransfer.getAccountTo());
+	    }
+	       System.out.print("             $" + String.format("%.2f",myTransfer.getAmount()) + "\n");
+	    }
+   }
 }

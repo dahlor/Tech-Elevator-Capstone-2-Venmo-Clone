@@ -16,6 +16,8 @@ public interface TransfersDAO {
     
     Transfers getTransfersByUserId(Long userId);
     
+    List<Transfers> getTransfersByAccount(Long accountId);
+    
     void updateTransfers(Transfers transfer, Long transferId);
 
 }

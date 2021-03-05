@@ -28,12 +28,7 @@ public class TransfersSqlDAO implements TransfersDAO {
 		if(results.next()) {
 			Transfers theTransfers = mapRowToTransfer(results);
 			getListOfTransfers.add(theTransfers);
-		}
-				          
-				         
-				 
-				 
-				
+		}				          			   			
 		return getListOfTransfers;
 	}
 
@@ -54,6 +49,8 @@ public class TransfersSqlDAO implements TransfersDAO {
 		
 	}
 
+	// MAKE THIS A LIST ALSO!
+	
 	@Override
 	public Transfers getTransfersByTransferId(Long transferId) {
 		Transfers theTransfer = new Transfers();
@@ -83,6 +80,18 @@ public class TransfersSqlDAO implements TransfersDAO {
 			
 		}
 		return theTransferById;
+	}
+	
+	public List<Transfers> getTransfersByAccount(Long accountId) {
+		List<Transfers> theTransferByAccount = new ArrayList<>();
+		String sqlQuery = "select * from transfers inner join transfer_statuses on transfer_statuses.transfer_status_id = transfers.transfer_status_id inner join transfer_types on transfer_types.transfer_type_id = transfers.transfer_type_id where account_from = ? or account_to = ?";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlQuery, accountId, accountId);
+		while(results.next()) {
+			Transfers theOtherTransferByAccount = mapRowToTransfer(results);
+			theTransferByAccount.add(theOtherTransferByAccount);
+		}
+		return theTransferByAccount;
 	}
 		
 	public void updateTransfers( Transfers transfer, Long transferId) {

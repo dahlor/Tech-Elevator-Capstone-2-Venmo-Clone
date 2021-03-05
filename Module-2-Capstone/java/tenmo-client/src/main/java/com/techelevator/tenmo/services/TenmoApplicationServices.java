@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.services;
 
+import java.util.List;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -60,6 +62,17 @@ public class TenmoApplicationServices {
 	    return myUsername;
 	  }
 	
+    public Transfers[] getTransfersByAccount(Long accountId) throws AuthenticationServiceException {
+    	Transfers[] listOfTransfers = null;
+	    try {
+	      listOfTransfers = restTemplate.exchange(BASE_URL + "transfers/" + accountId, HttpMethod.GET, makeAuthEntity(), Transfers[].class).getBody();
+	    } catch (RestClientResponseException ex) {
+	      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+	    }
+	    return listOfTransfers;
+	  }
+	
+	
 	  public User[] listUsers() throws AuthenticationServiceException {
 		    User[] listOfUsers = null;
 		    try {
@@ -70,15 +83,15 @@ public class TenmoApplicationServices {
 		    return listOfUsers;
 		  }
 	  
-	  public Transfers[] listTransfers(Long userId) throws AuthenticationServiceException {
-		    Transfers[] listOfTransfers = null;
-		    try {
-		      listOfTransfers = restTemplate.exchange(BASE_URL + "transfers/" + userId, HttpMethod.GET, makeAuthEntity(), Transfers[].class).getBody();
-		    } catch (RestClientResponseException ex) {
-		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
-		    }
-		    return listOfTransfers;
-		  }
+//	  public Transfers[] listTransfers(Long userId) throws AuthenticationServiceException {
+//		    Transfers[] listOfTransfers = null;
+//		    try {
+//		      listOfTransfers = restTemplate.exchange(BASE_URL + "transfers/" + userId, HttpMethod.GET, makeAuthEntity(), Transfers[].class).getBody();
+//		    } catch (RestClientResponseException ex) {
+//		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+//		    }
+//		    return listOfTransfers;
+//		  }
 	
 	private HttpEntity makeAuthEntity() {
 		   HttpHeaders headers = new HttpHeaders();        // instantiate a header object for request

@@ -52,20 +52,20 @@ public class ApiController {
 		return theTransfers;
 	}
 	
-    @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.GET)
-    public Transfers getTransferById(@PathVariable Long transferId) {
-    	return transfersDAO.getTransfersByTransferId(transferId);
-	}
+//    @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.GET)
+//   public Transfers getTransferById(@PathVariable Long transferId) {
+//    	return transfersDAO.getTransfersByTransferId(transferId);
+//	}
     
     @RequestMapping(path = "/balance/{userId}", method = RequestMethod.GET)
     public Accounts getBalanceByUserId(@PathVariable Long userId) {
 		    	
         return accountsDAO.getBalanceByUserId(userId);
 	}
-    
-    @RequestMapping(path = "/transfers/{userId}", method = RequestMethod.GET)
-    public Transfers getTransfersByUserId(@PathVariable Long userId) {
-    	return transfersDAO.getTransfersByUserId(userId);
+ 
+    @RequestMapping(path = "/transfers/{accountId}", method = RequestMethod.GET)
+    public List<Transfers> getTransfersByUserAccount(@PathVariable Long accountId) {
+    	return transfersDAO.getTransfersByAccount(accountId);
     }
     
     @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.POST)

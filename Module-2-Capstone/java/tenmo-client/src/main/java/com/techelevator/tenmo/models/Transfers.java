@@ -71,11 +71,4 @@ public class Transfers {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-
-	@Override
-	public String toString() {
-		return "Transfers [transferId=" + transferId + ", transferTypeId=" + transferTypeId + ", transferStatus="
-				+ transferStatus + ", accountFrom=" + accountFrom + ", accountTo=" + accountTo + ", amount=" + amount
-				+ "]";
-	}
 }
