@@ -5,6 +5,8 @@ import com.techelevator.tenmo.model.Accounts;
 import com.techelevator.tenmo.model.Transfers;
 
 public interface AccountsDAO {
+	
+	Long getAccountByUsername(String username);
 		
 	Accounts getAccountByUserId(Long userId);
 	

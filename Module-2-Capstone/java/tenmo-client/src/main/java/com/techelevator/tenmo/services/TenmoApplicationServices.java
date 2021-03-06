@@ -29,60 +29,60 @@ public class TenmoApplicationServices {
 		  BASE_URL = url;
 	}
 	
-	public Accounts getBalanceByUserId(Long userId) throws AuthenticationServiceException{
+	public Accounts getBalanceByUserId(Long userId, String authToken) throws AuthenticationServiceException{
 	    Accounts myAccount = null;
 	    try {
-	      myAccount = restTemplate.exchange(BASE_URL + "balance/" + userId, HttpMethod.GET, makeAuthEntity(AUTH_TOKEN), Accounts.class).getBody();
+	      myAccount = restTemplate.exchange(BASE_URL + "balance/" + userId, HttpMethod.GET, makeAuthEntity(authToken), Accounts.class).getBody();
 	    } catch (RestClientResponseException ex) {
 	      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 	    }
 	    return myAccount;
 	}
 	
-	public Accounts getBalanceByAccountId(Long accountId) throws AuthenticationServiceException{
+	public Accounts getBalanceByAccountId(Long accountId, String authToken) throws AuthenticationServiceException{
 	    Accounts myAccount = null;
 	    try {
-	      myAccount = restTemplate.exchange(BASE_URL + "account/"+accountId+"/balance", HttpMethod.GET, makeAuthEntity(AUTH_TOKEN), Accounts.class).getBody();
+	      myAccount = restTemplate.exchange(BASE_URL + "account/"+accountId+"/balance", HttpMethod.GET, makeAuthEntity(authToken), Accounts.class).getBody();
 	    } catch (RestClientResponseException ex) {
 	      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 	    }
 	    return myAccount;
 	}
 	
-	public int getIdByUsername(String username) throws AuthenticationServiceException{
+	public int getIdByUsername(String username, String authToken) throws AuthenticationServiceException{
 	    int myUserId;
 	    try {
-	      myUserId = restTemplate.exchange(BASE_URL + "user/" + username + "/id", HttpMethod.GET, makeAuthEntity(AUTH_TOKEN), int.class).getBody();
+	      myUserId = restTemplate.exchange(BASE_URL + "user/" + username + "/id", HttpMethod.GET, makeAuthEntity(authToken), int.class).getBody();
 	    } catch (RestClientResponseException ex) {
 	      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 	    }
 	    return myUserId;
 	}
 	
-	public String getUsernameById(Long userId) throws AuthenticationServiceException{
+	public String getUsernameById(Long userId, String authToken) throws AuthenticationServiceException{
 	    String myUsername;
 	    try {
-	      myUsername = restTemplate.exchange(BASE_URL + "user/" + userId + "/username", HttpMethod.GET, makeAuthEntity(AUTH_TOKEN), String.class).getBody();
+	      myUsername = restTemplate.exchange(BASE_URL + "user/" + userId + "/username", HttpMethod.GET, makeAuthEntity(authToken), String.class).getBody();
 	    } catch (RestClientResponseException ex) {
 	      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 	    }
 	    return myUsername;
 	}
 	
-    public Transfers[] getTransfersByAccount(Long accountId) throws AuthenticationServiceException {
+    public Transfers[] getTransfersByAccount(Long accountId, String authToken) throws AuthenticationServiceException {
     	Transfers[] listOfTransfers = null;
 	    try {
-	      listOfTransfers = restTemplate.exchange(BASE_URL + "/" + accountId + "/transfers", HttpMethod.GET, makeAuthEntity(AUTH_TOKEN), Transfers[].class).getBody();
+	      listOfTransfers = restTemplate.exchange(BASE_URL + "/" + accountId + "/transfers", HttpMethod.GET, makeAuthEntity(authToken), Transfers[].class).getBody();
 	    } catch (RestClientResponseException ex) {
 	      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 	    }
 	    return listOfTransfers;
     }
     
-    public Transfers getTransfersByTransferId(Long transferId) throws AuthenticationServiceException {
+    public Transfers getTransfersByTransferId(Long transferId, String authToken) throws AuthenticationServiceException {
     	Transfers myTransfers = null;
 	    try {
-	      myTransfers = restTemplate.exchange(BASE_URL + "/transfers/" + transferId, HttpMethod.GET, makeAuthEntity(AUTH_TOKEN), Transfers.class).getBody();
+	      myTransfers = restTemplate.exchange(BASE_URL + "/transfers/" + transferId, HttpMethod.GET, makeAuthEntity(authToken), Transfers.class).getBody();
 	    } catch (RestClientResponseException ex) {
 	      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 	    }
@@ -90,60 +90,70 @@ public class TenmoApplicationServices {
 	  }
 	
 	
-	  public User[] listUsers() throws AuthenticationServiceException {
+	  public User[] listUsers(String authToken) throws AuthenticationServiceException {
 		    User[] listOfUsers = null;
 		    try {
-		      listOfUsers = restTemplate.exchange(BASE_URL + "user", HttpMethod.GET, makeAuthEntity(AUTH_TOKEN), User[].class).getBody();
+		      listOfUsers = restTemplate.exchange(BASE_URL + "user", HttpMethod.GET, makeAuthEntity(authToken), User[].class).getBody();
 		    } catch (RestClientResponseException ex) {
 		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		    }
 		    return listOfUsers;
 	  }
 	  
-	  public String findUsernameByAccount(Long accountNumber) throws AuthenticationServiceException {
+	  public String findUsernameByAccount(Long accountNumber, String authToken) throws AuthenticationServiceException {
 		  String myUsername;
 		    try {
-		      myUsername = restTemplate.exchange(BASE_URL + "account/" + accountNumber + "/username", HttpMethod.GET, makeAuthEntity(AUTH_TOKEN), String.class).getBody();
+		      myUsername = restTemplate.exchange(BASE_URL + "account/" + accountNumber + "/username", HttpMethod.GET, makeAuthEntity(authToken), String.class).getBody();
 		    } catch (RestClientResponseException ex) {
 		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		    }
 		    return myUsername;  
 	  }
 	  
-	  public Transfers createTransfersByUserId(Long transferId) throws AuthenticationServiceException {
+	  public Long findAccountByUsername(String username, String authToken) throws AuthenticationServiceException {
+		  Long myAccount;
+		    try {
+		      myAccount = restTemplate.exchange(BASE_URL + "user/"+username+"/accountNumber", HttpMethod.GET, makeAuthEntity(authToken), Long.class).getBody();
+		    } catch (RestClientResponseException ex) {
+		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+		    }
+		    return myAccount;  
+	  }
+	  
+	  public Transfers createTransfersByUserId(Long transferId, String authToken) throws AuthenticationServiceException {
 	    	Transfers myTransfers = null;
 		    try {
-		      myTransfers = restTemplate.exchange(BASE_URL + "/transfers/" + transferId, HttpMethod.GET, makeAuthEntity(AUTH_TOKEN), Transfers.class).getBody();
+		      myTransfers = restTemplate.exchange(BASE_URL + "/transfers/" + transferId, HttpMethod.GET, makeAuthEntity(authToken), Transfers.class).getBody();
 		    } catch (RestClientResponseException ex) {
 		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		    }
 		    return myTransfers;
 	  }
 	  
-	  public Transfers pushTransfer(Long transferId, Transfers transfer, String AUTH_TOKEN) throws AuthenticationServiceException {
+	  public Transfers pushTransfer(Long transferId, Transfers transfer, String authToken) throws AuthenticationServiceException {
 		  Transfers myTransfers = null;
 		    try {
-		      myTransfers = restTemplate.postForObject(BASE_URL + "/transfers/"+transferId, makeTransferEntity(transfer, AUTH_TOKEN), Transfers.class);
+		      myTransfers = restTemplate.postForObject(BASE_URL + "/transfers/"+transferId, makeTransferEntity(transfer, authToken), Transfers.class);
 		    } catch (RestClientResponseException ex) {
 		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		    }
 		    return myTransfers;
 	  }
 	  
-	  public Transfers updateBalances(Long transferId, Transfers transfer) throws AuthenticationServiceException {
+	  public Transfers updateBalances(Long transferId, Transfers transfer, String authToken) throws AuthenticationServiceException {
 		  Transfers myTransfers = null;
 		    try {
-		      myTransfers = restTemplate.postForObject(BASE_URL + "/account/balances/update/"+transferId, makeTransferEntity(transfer, AUTH_TOKEN), Transfers.class);
+		      myTransfers = restTemplate.postForObject(BASE_URL + "/account/balances/update/"+transferId, makeTransferEntity(transfer, authToken), Transfers.class);
 		    } catch (RestClientResponseException ex) {
 		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		    }
 		    return myTransfers;
 	  }
 	  
-	  public Long getNextTransferId() throws AuthenticationServiceException {
+	  public Long getNextTransferId(String authToken) throws AuthenticationServiceException {
 	    Long myNextTransferId = null;
 			try {
-		      myNextTransferId = restTemplate.exchange(BASE_URL + "/transfers/nextval", HttpMethod.GET, makeAuthEntity(AUTH_TOKEN), Long.class).getBody();
+		      myNextTransferId = restTemplate.exchange(BASE_URL + "/transfers/nextval", HttpMethod.GET, makeAuthEntity(authToken), Long.class).getBody();
 		    } catch (RestClientResponseException ex) {
 		      throw new AuthenticationServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		    }

@@ -21,7 +21,6 @@ import com.techelevator.tenmo.model.User;
 ********************************************************************************************************/
 @RestController
 @PreAuthorize("isAuthenticated()")
-
 public class ApiController {
 	private AccountsDAO accountsDAO;
 	private TransfersDAO transfersDAO;
@@ -36,6 +35,11 @@ public class ApiController {
     @RequestMapping(path = "/account/{userId}", method = RequestMethod.GET)
     public Accounts getAccountByUserId(@PathVariable Long userId) {
         return accountsDAO.getAccountByUserId(userId);
+	}
+    
+    @RequestMapping(path = "user/{username}/accountNumber", method = RequestMethod.GET)
+    public Long getAccountByUsername(@PathVariable String username) {
+        return accountsDAO.getAccountByUsername(username);
 	}
     
     @RequestMapping(path = "/balance/{userId}", method = RequestMethod.GET)

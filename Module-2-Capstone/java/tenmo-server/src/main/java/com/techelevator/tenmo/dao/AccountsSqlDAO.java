@@ -26,6 +26,11 @@ public class AccountsSqlDAO implements AccountsDAO {
 		returnedAccount = mapRowToAccounts(theRowSet);
 		return returnedAccount;
 	}
+	
+	@Override
+	public Long getAccountByUsername(String username) {
+		return jdbcTemplate.queryForObject("select accounts.account_id from users inner join accounts on users.user_id = accounts.user_id where username = ?", Long.class, username);
+	}
 
 	@Override
 	public void updateBalances(Transfers transfer) {

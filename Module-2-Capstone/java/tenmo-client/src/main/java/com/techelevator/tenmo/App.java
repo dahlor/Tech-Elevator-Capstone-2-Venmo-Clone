@@ -76,25 +76,26 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			} 
 		}
 	}
-
+	
 	private void viewCurrentBalance() throws AuthenticationServiceException {
-	    Long longUserId = ((long) appService.getIdByUsername(currentUser.getUser().getUsername()));
+	    String authToken = currentUser.getToken();
+	    Long longUserId = ((long) appService.getIdByUsername(currentUser.getUser().getUsername(), authToken));
 		System.out.println("Your current account balance is: $" + String.format("%.2f", 
-				appService.getBalanceByUserId(longUserId).getBalance()));
+				appService.getBalanceByUserId(longUserId, authToken).getBalance()));
 	} 
 
 	private void viewTransferHistory() throws AuthenticationServiceException {
-		
-	    Long longUserId = ((long) appService.getIdByUsername(currentUser.getUser().getUsername()));
+	    String authToken = currentUser.getToken();
+	    Long longUserId = ((long) appService.getIdByUsername(currentUser.getUser().getUsername(), authToken));
 
-		System.out.println("------------------------------------------------");
-		System.out.println("                T R A N S F E R S               \n");
-		System.out.println(" ID                  FROM/TO             AMOUNT ");		
-		System.out.println("------------------------------------------------");
+		System.out.println("-----------------------------------------------------");
+		System.out.println("                   T R A N S F E R S               \n");
+		System.out.println(" ID                  FROM/TO                  AMOUNT ");		
+		System.out.println("-----------------------------------------------------");
 		
-		formattedTransferList(appService.getTransfersByAccount(longUserId));
+		formattedTransferList(appService.getTransfersByAccount(longUserId, authToken));
 		
-		System.out.println("------------------------------------------------\n");
+		System.out.println("-----------------------------------------------------\n");
 		
 		String transferId = console.getUserInput("Please enter transfer ID to view details (0 to cancel)");
 		
@@ -107,7 +108,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				System.out.println("------------------------------------------------");
 				
 				Long longTransferId = Long.parseLong(transferId);
-				formattedTransferDetails(appService.getTransfersByTransferId(longTransferId));			
+				formattedTransferDetails(appService.getTransfersByTransferId(longTransferId, authToken));			
 
 				System.out.println("------------------------------------------------\n");
 
@@ -123,14 +124,15 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() throws AuthenticationServiceException {
 		
-	    Long longUserId = ((long) appService.getIdByUsername(currentUser.getUser().getUsername()));
+	    String authToken = currentUser.getToken();
+	    Long longUserId = ((long) appService.getIdByUsername(currentUser.getUser().getUsername(), authToken));
 		
 		System.out.println("------------------------------------------------");
 		System.out.println("             S E N D  T E  B U C K S            \n");
-		System.out.println(" USER ID              NAME                      \n");		
+		System.out.println(" USER ID              NAME                      ");		
 		System.out.println("------------------------------------------------");
 		
-		formattedUserList(appService.listUsers());
+		formattedUserList(appService.listUsers(authToken));
 		
 		System.out.println("------------------------------------------------\n");
 		
@@ -144,17 +146,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				String enteredAmount = console.getUserInput("Enter amount");
 				Double formattedAmount = Double.parseDouble(enteredAmount);
 
-				if (formattedAmount > appService.getBalanceByUserId(longUserId).getBalance()) {
+				if (formattedAmount > appService.getBalanceByUserId(longUserId, authToken).getBalance()) {
 					System.out.println("\nInsufficient funds for transfer.\n");
 					sendBucks();
 				} else {
 					Transfers myNewTransfer = createSendTransfer(longUserId, longIdSendingTo, formattedAmount);
 					Long myNewTransferId = myNewTransfer.getTransferId();
 				
-					appService.pushTransfer(myNewTransferId, myNewTransfer);		
-					appService.updateBalances(myNewTransferId, myNewTransfer);
+					appService.pushTransfer(myNewTransferId, myNewTransfer, authToken);		
+					appService.updateBalances(myNewTransferId, myNewTransfer, authToken);
 			
-					System.out.println("\nYou have transferred $" + String.format("%.2f", formattedAmount) + " to " + appService.getUsernameById(Long.parseLong(idSendingTo)) + ".");
+					System.out.println("\nYou have transferred $" + String.format("%.2f", formattedAmount) + " to " + appService.getUsernameById(Long.parseLong(idSendingTo), authToken) + ".");
 					}
 				} catch (Exception e) {
 				System.out.println("\nInvalid entry. Please try again.\n");
@@ -233,21 +235,29 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 	
 	public void formattedTransferList(Transfers[] transferList) throws AuthenticationServiceException{
+	    String authToken = currentUser.getToken();
 	    for(Transfers myTransfer : transferList){
-	        System.out.print(" " + myTransfer.getTransferId() + "           ");
-	        	if (myTransfer.getTransferTypeId().equals(1L)){
-		        System.out.print("        From: " + appService.findUsernameByAccount(myTransfer.getAccountFrom()));
+	    		    	
+	    		String numberOne = (" "+myTransfer.getTransferId()+"");
+	       
+	    		String numberTwo; 
+	        	if (myTransfer.getAccountFrom().equals(appService.findAccountByUsername(currentUser.getUser().getUsername(), authToken))){
+		        numberTwo = ("To: " + appService.findUsernameByAccount(myTransfer.getAccountTo(), authToken));
 	        	} else {
-		        System.out.print("        To: " + appService.findUsernameByAccount(myTransfer.getAccountTo()));
+	        	numberTwo = ("From: " + appService.findUsernameByAccount(myTransfer.getAccountFrom(), authToken));
 	        	}
-	        System.out.printf("%16s", String.format("$%.2f",myTransfer.getAmount()) + "\n");
+	        
+	        	String numberThree = (String.format("$%.2f",myTransfer.getAmount()));
+	        	
+		    	System.out.printf("%-20s %-19s %11s\n", numberOne, numberTwo, numberThree);
 	    }
    }
 	
-	public void formattedTransferDetails(Transfers transferDetails) throws AuthenticationServiceException {
+	public void formattedTransferDetails(Transfers transferDetails) throws AuthenticationServiceException{ 
+		String authToken = currentUser.getToken();
 		System.out.println("Id: " + transferDetails.getTransferId());
-		System.out.println("From: " + appService.findUsernameByAccount(transferDetails.getAccountFrom()));
-		System.out.println("To: " + appService.findUsernameByAccount(transferDetails.getAccountTo()));
+		System.out.println("From: " + appService.findUsernameByAccount(transferDetails.getAccountFrom(), authToken));
+		System.out.println("To: " + appService.findUsernameByAccount(transferDetails.getAccountTo(), authToken));
 		System.out.println("Type: " + toFromWords(transferDetails.getTransferTypeId()));
 		System.out.println("Status: " + transferStatusWords(transferDetails.getTransferStatusId()));
 		System.out.println("Amount: $" + String.format("%.2f",transferDetails.getAmount()));
@@ -279,8 +289,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 	
 	public Transfers createSendTransfer(Long accountFrom, Long accountTo, double amount) throws AuthenticationServiceException {
+	    String authToken = currentUser.getToken();
 		Transfers myTransfer = new Transfers();
-		myTransfer.setTransferId(appService.getNextTransferId());
+		myTransfer.setTransferId(appService.getNextTransferId(authToken));
 		myTransfer.setTransferTypeId(Long.parseLong("2"));
 		myTransfer.setTransferStatusId(Long.parseLong("2"));
 		myTransfer.setAccountFrom(accountFrom);
