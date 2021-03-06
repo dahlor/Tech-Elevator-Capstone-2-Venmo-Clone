@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import com.techelevator.tenmo.model.Accounts;
+import com.techelevator.tenmo.model.Transfers;
 import com.techelevator.tenmo.model.User;
 @Component
 public class AccountsSqlDAO implements AccountsDAO {
@@ -27,9 +28,11 @@ public class AccountsSqlDAO implements AccountsDAO {
 	}
 
 	@Override
-	public void updateBalance(Accounts account, double balance) {
-		String updateBalanceQuery = "insert into (account_id, user_id, balance) values (?, ?, ?)";
-		jdbcTemplate.queryForRowSet(updateBalanceQuery, account.getAccountId(), account.getUserId(), balance);
+	public void updateBalances(Transfers transfer) {
+		String updateMyBalance = "update accounts set balance = (balance - ?) where account_id = ?";
+		jdbcTemplate.update(updateMyBalance, transfer.getAmount(), transfer.getAccountFrom());
+		String updateYourBalance = "update accounts set balance = (balance + ?) where account_id = ?";
+		jdbcTemplate.update(updateYourBalance, transfer.getAmount(), transfer.getAccountTo());
 	}
 
 	@Override
@@ -39,13 +42,19 @@ public class AccountsSqlDAO implements AccountsDAO {
 		Accounts returnedAccount = new Accounts();
 		while(theRowSet.next()) {
 			returnedAccount = mapRowToAccounts(theRowSet);
-			
 		}
-		
 		return returnedAccount;
-		
-		//double returnedBalance = theRowSet.getDouble("balance");
-		//return returnedBalance;
+	}
+	
+	@Override
+	public Accounts getBalanceByAccountId(Long accountId) {
+		String sqlQuery = "select * from accounts where account_id = ?";
+		SqlRowSet theRowSet = jdbcTemplate.queryForRowSet(sqlQuery, accountId);
+		Accounts returnedAccount = new Accounts();
+		while(theRowSet.next()) {
+			returnedAccount = mapRowToAccounts(theRowSet);
+		}
+		return returnedAccount;
 	}
 	
     private Accounts mapRowToAccounts(SqlRowSet rs) {
@@ -55,5 +64,4 @@ public class AccountsSqlDAO implements AccountsDAO {
         account.setBalance(rs.getDouble("balance"));
         return account;
     }
-
 }

@@ -18,7 +18,6 @@ public class TransfersSqlDAO implements TransfersDAO {
 		
 		 this.jdbcTemplate = jdbcTemplate;
 	}
-	
 
 	@Override
 	public List<Transfers> getAllTransfers() {
@@ -31,24 +30,13 @@ public class TransfersSqlDAO implements TransfersDAO {
 		}				          			   			
 		return getListOfTransfers;
 	}
+	
 	@Override
-	public Transfers pushTransfer(Transfers transfers) {
-		Transfers theTransfer = new Transfers();
-		String sqlQuery = "insert into transfers (transfer_type_id,transfer_status_id,account_from,account_to,amount) " +
-		                   " values (?,?,?,?,?) ";
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlQuery,transfers);
-		while(results.next()) {
-			theTransfer = mapRowToTransfer(results);
-			
-		}
-		
-		return theTransfer;
-		
-		
-		
-	}
-
-	// MAKE THIS A LIST ALSO!
+	public void pushTransfer(Transfers myTransfer) {
+		String sqlQuery = "insert into transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) "
+						+ "values (?,?,?,?,?)";
+		jdbcTemplate.update(sqlQuery, myTransfer.getTransferTypeId(), myTransfer.getTransferStatusId(), myTransfer.getAccountFrom(), myTransfer.getAccountTo(), myTransfer.getAmount());
+	} 
 	
 	@Override
 	public Transfers getTransfersByTransferId(Long transferId) {
@@ -58,9 +46,10 @@ public class TransfersSqlDAO implements TransfersDAO {
 		while(results.next()) {
 			theTransfer = mapRowToTransfer(results);
 		}
-		return theTransfer;
-		
+		return theTransfer;		
 	}
+	
+	@Override
 	public Transfers getTransfersByUserId(Long userId) {
 		Transfers theTransferById = new Transfers();
 		String sqlQuery = "select transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount,users.user_id,username " + 
@@ -76,6 +65,7 @@ public class TransfersSqlDAO implements TransfersDAO {
 		return theTransferById;
 	}
 	
+	@Override
 	public List<Transfers> getTransfersByAccount(Long accountId) {
 		List<Transfers> theTransferByAccount = new ArrayList<>();
 		String sqlQuery = "select * from transfers inner join transfer_statuses on transfer_statuses.transfer_status_id = transfers.transfer_status_id inner join transfer_types on transfer_types.transfer_type_id = transfers.transfer_type_id where account_from = ? or account_to = ?";
@@ -87,23 +77,6 @@ public class TransfersSqlDAO implements TransfersDAO {
 		}
 		return theTransferByAccount;
 	}
-		
-	public void updateTransfers( Transfers transfer, Long transferId) {
-		Transfers theUpdateTransfer = new Transfers();
-		String sqlQuery = "insert into( transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount) values(?,?,?,?,?,? )";
-		theUpdateTransfer.setTransferId(getNextTransferId());
-		jdbcTemplate.update(sqlQuery,theUpdateTransfer.getTransferId(),theUpdateTransfer.getTransferTypeId(),
-				            theUpdateTransfer.getTransferStatusId(),
-				            theUpdateTransfer.getAccountFrom(),
-				            theUpdateTransfer.getAccountTo(),
-				            theUpdateTransfer.getAmount());
-		//return newUpdatedTransfer;
-		
-	}
-	
-		
-		
-		
 	
 	private Transfers mapRowToTransfer(SqlRowSet results) {
 		Transfers theTransfer;
@@ -116,14 +89,13 @@ public class TransfersSqlDAO implements TransfersDAO {
 		theTransfer.setAmount(results.getDouble("amount"));
 		return theTransfer;
 	}
-	private long getNextTransferId() {
+	
+	public Long getNextTransferId() {
 		SqlRowSet nextTransferIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_transfer_id')");
-		if(nextTransferIdResult.next()) {
+		 if(nextTransferIdResult.next()) {
 			return nextTransferIdResult.getLong(1);
-		
 		} else {
 			throw new RuntimeException("Something went wrong while getting an id for the new department");
 		}
-	}
-
+	} 
 }

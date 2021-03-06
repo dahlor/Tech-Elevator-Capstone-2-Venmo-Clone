@@ -102,7 +102,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			mainMenu();
 		} else {
 			try{
-				System.out.println("------------------------------------------------");
+				System.out.println("\n------------------------------------------------");
 				System.out.println("         T R A N S F E R  D E T A I L S         ");	
 				System.out.println("------------------------------------------------");
 				
@@ -119,27 +119,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewPendingRequests() {
-
-		System.out.println("------------------------------------------------");
-		System.out.println("        P E N D I N G  T R A N S F E R S        \n");	
-		System.out.println(" USER ID               TO                AMOUNT ");		
-		System.out.println("------------------------------------------------");
-		
-		System.out.println("                                                ");
-		System.out.println("Please enter transfer ID to approve/reject (0 to cancel): ");
-		
-		System.out.println("------------------------------------------------");
-		System.out.println("1: Approve");
-		System.out.println("2: Reject");
-		System.out.println("0: Don't approve or reject");
-		System.out.println("------------------------------------------------\n");
-		System.out.println("Please choose an option: ");
-
-
-		
 	}
 
 	private void sendBucks() throws AuthenticationServiceException {
+		
+	    Long longUserId = ((long) appService.getIdByUsername(currentUser.getUser().getUsername()));
 		
 		System.out.println("------------------------------------------------");
 		System.out.println("             S E N D  T E  B U C K S            \n");
@@ -156,49 +140,30 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			mainMenu();
 		} else {
 			try{
+				Long longIdSendingTo = Long.parseLong(idSendingTo);
 				String enteredAmount = console.getUserInput("Enter amount");
 				Double formattedAmount = Double.parseDouble(enteredAmount);
-               // Long longTransferId = Long.parseLong(transferId);
+
+				if (formattedAmount > appService.getBalanceByUserId(longUserId).getBalance()) {
+					System.out.println("\nInsufficient funds for transfer.\n");
+					sendBucks();
+				} else {
+					Transfers myNewTransfer = createSendTransfer(longUserId, longIdSendingTo, formattedAmount);
+					Long myNewTransferId = myNewTransfer.getTransferId();
 				
-				//appService.pushTransfer(longTransferId, transfer);
+					appService.pushTransfer(myNewTransferId, myNewTransfer);		
+					appService.updateBalances(myNewTransferId, myNewTransfer);
 			
-				
-			
-				System.out.println("\nYou have transferred $" + String.format("%.2f", formattedAmount) + " to " + appService.getUsernameById(Long.parseLong(idSendingTo)) + ".");
-			} catch (Exception e) {
+					System.out.println("\nYou have transferred $" + String.format("%.2f", formattedAmount) + " to " + appService.getUsernameById(Long.parseLong(idSendingTo)) + ".");
+					}
+				} catch (Exception e) {
 				System.out.println("\nInvalid entry. Please try again.\n");
 				sendBucks();
 			}
 		}
-	}
+	}	
 
-	private void requestBucks() throws AuthenticationServiceException {
-		System.out.println("------------------------------------------------");
-		System.out.println("         R E Q U E S T  T E  B U C K S          \n");
-		System.out.println(" USER ID              NAME                      ");		
-		System.out.println("------------------------------------------------");
-		
-		formattedUserList(appService.listUsers());
-		
-		System.out.println("------------------------------------------------\n");
-		String idRequestingFrom = console.getUserInput("Enter ID of user you are requesting from (0 to cancel)");
-		
-		if (idRequestingFrom.equals("0")){
-			mainMenu();
-		} else {
-			try{
-				String enteredAmount = console.getUserInput("Enter amount");
-				Double formattedAmount = Double.parseDouble(enteredAmount);
-			
-			// ACTUALLY PUT IN THE TRANSFER REQUEST RIGHT HERE
-				
-			
-				System.out.println("\nYou have requested $" + String.format("%.2f", formattedAmount) + " from " + appService.getUsernameById(Long.parseLong(idRequestingFrom)) + ".");
-			} catch (Exception e) {
-				System.out.println("\nInvalid entry. Please try again.\n");
-				requestBucks();
-			}
-		}
+	private void requestBucks() {
 	}
 	
 	private void exitProgram() {
@@ -267,15 +232,15 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	    }
 	}
 	
-	public void formattedTransferList(Transfers[] transferList){
+	public void formattedTransferList(Transfers[] transferList) throws AuthenticationServiceException{
 	    for(Transfers myTransfer : transferList){
 	        System.out.print(" " + myTransfer.getTransferId() + "           ");
 	        	if (myTransfer.getTransferTypeId().equals(1L)){
-		        System.out.print("        From: " + myTransfer.getAccountFrom());
+		        System.out.print("        From: " + appService.findUsernameByAccount(myTransfer.getAccountFrom()));
 	        	} else {
-		        System.out.print("        To:   " + myTransfer.getAccountTo());
-	    }
-	       System.out.print("             $" + String.format("%.2f",myTransfer.getAmount()) + "\n");
+		        System.out.print("        To: " + appService.findUsernameByAccount(myTransfer.getAccountTo()));
+	        	}
+	        System.out.printf("%16s", String.format("$%.2f",myTransfer.getAmount()) + "\n");
 	    }
    }
 	
@@ -312,21 +277,15 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 		return wordsReturn;
 	}
-	public Transfers createSendTransfer(Long accountFrom, Long accountTo, double amount) {
+	
+	public Transfers createSendTransfer(Long accountFrom, Long accountTo, double amount) throws AuthenticationServiceException {
 		Transfers myTransfer = new Transfers();
-		
-		
-		
+		myTransfer.setTransferId(appService.getNextTransferId());
 		myTransfer.setTransferTypeId(Long.parseLong("2"));
 		myTransfer.setTransferStatusId(Long.parseLong("2"));
 		myTransfer.setAccountFrom(accountFrom);
 		myTransfer.setAccountTo(accountTo);
 		myTransfer.setAmount(amount);
-		
 		return myTransfer;
-		
 	}
-	
-	}
-	
-
+}
